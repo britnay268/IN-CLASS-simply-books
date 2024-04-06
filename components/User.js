@@ -8,7 +8,7 @@ import { signOut } from '../utils/auth';
 
 export default function User() {
   const { user } = useAuth();
-  console.warn(user);
+  // console.warn(user);
   return (
     <>
       <img src={user.photoURL} />
