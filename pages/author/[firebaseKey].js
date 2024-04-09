@@ -1,8 +1,9 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Button, Card } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import { viewAuthorDetails } from '../../api/mergedData';
+import BookCard from '../../components/BookCard';
 
 export default function ViewAuthor() {
   const [authorDetails, setAuthorDetails] = useState({});
@@ -10,8 +11,12 @@ export default function ViewAuthor() {
   const router = useRouter();
   const { firebaseKey } = router.query;
 
-  useEffect(() => {
+  const getAuthorDetails = () => {
     viewAuthorDetails(firebaseKey).then(setAuthorDetails);
+  };
+
+  useEffect(() => {
+    getAuthorDetails();
   }, [firebaseKey]);
 
   return (
@@ -26,25 +31,7 @@ export default function ViewAuthor() {
       </div>
       <div>
         {authorDetails.books?.map((bookObj) => (
-
-          <Card style={{ width: '18rem', margin: '10px' }}>
-            <Card.Img variant="top" src={bookObj.image} alt={bookObj.title} style={{ height: '400px' }} />
-            <Card.Body>
-              <Card.Title>{bookObj.title}</Card.Title>
-              <p className="card-text bold">{bookObj.sale && <span>SALE<br /></span> } ${bookObj.price}</p>
-              {/* DYNAMIC LINK TO VIEW THE BOOK DETAILS  */}
-              <Link href={`/book/${bookObj.firebaseKey}`} passHref>
-                <Button variant="primary" className="m-2">VIEW</Button>
-              </Link>
-              {/* DYNAMIC LINK TO EDIT THE BOOK DETAILS  */}
-              <Link href={`/book/edit/${bookObj.firebaseKey}`} passHref>
-                <Button variant="info">EDIT</Button>
-              </Link>
-              <Button variant="danger" className="m-2">
-                DELETE
-              </Button>
-            </Card.Body>
-          </Card>
+          <BookCard key={bookObj.firebaseKey} bookObj={bookObj} onUpdate={getAuthorDetails} />
         ))}
       </div>
     </>
