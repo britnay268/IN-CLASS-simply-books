@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { PropTypes } from 'prop-types';
 import { Button, FloatingLabel, Form } from 'react-bootstrap';
+import { useRouter } from 'next/router';
+import { useAuth } from '../../utils/context/authContext';
+import { createAuthor, updateAuthor } from '../../api/authorData';
 
 const initialState = {
   first_name: '',
@@ -9,7 +12,9 @@ const initialState = {
 };
 
 export default function AuthorForm({ obj }) {
-  const [formInput, setFormInput] = useState(initialState);
+  const { user } = useAuth();
+  const [formInput, setFormInput] = useState({ ...initialState, uid: user.uid });
+  const router = useRouter();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,8 +24,25 @@ export default function AuthorForm({ obj }) {
     }));
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (obj.firebaseKey) {
+      // This is to edit Form
+      console.warn('This is for editting');
+    } else {
+      const payload = { ...formInput };
+      createAuthor(payload).then(({ name }) => {
+        const patchPayload = { firebaseKey: name };
+        updateAuthor(patchPayload).then(() => {
+          router.push('/authors');
+        });
+      });
+    }
+  };
+
   return (
-    <Form>
+    <Form onSubmit={handleSubmit}>
       <h2 className="text-white mt-5">{obj.firebaseKey ? 'Update' : 'Create'} Author</h2>
 
       <FloatingLabel controlId="floatingInput1" label="Author First Name" className="mb-3">
