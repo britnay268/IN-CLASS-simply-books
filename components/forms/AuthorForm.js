@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { PropTypes } from 'prop-types';
 import { Button, FloatingLabel, Form } from 'react-bootstrap';
 
@@ -9,6 +9,16 @@ const initialState = {
 };
 
 export default function AuthorForm({ obj }) {
+  const [formInput, setFormInput] = useState(initialState);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormInput((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
   return (
     <Form>
       <h2 className="text-white mt-5">{obj.firebaseKey ? 'Update' : 'Create'} Author</h2>
@@ -18,6 +28,8 @@ export default function AuthorForm({ obj }) {
           type="text"
           placeholder="Enter a first name"
           name="first_name"
+          value={formInput.first_name}
+          onChange={handleChange}
           required
         />
       </FloatingLabel>
@@ -27,6 +39,8 @@ export default function AuthorForm({ obj }) {
           type="text"
           placeholder="Enter a last name"
           name="last_name"
+          value={formInput.last_name}
+          onChange={handleChange}
           required
         />
       </FloatingLabel>
@@ -36,6 +50,8 @@ export default function AuthorForm({ obj }) {
           type="text"
           placeholder="Enter an email"
           name="email"
+          value={formInput.email}
+          onChange={handleChange}
           required
         />
       </FloatingLabel>
