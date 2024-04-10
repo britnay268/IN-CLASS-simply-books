@@ -24,7 +24,7 @@ function BookForm({ obj }) {
 
   useEffect(() => {
     getAuthors(user.uid).then(setAuthors);
-
+    // Shows the data of an ediited book in the form
     if (obj.firebaseKey) setFormInput(obj);
   }, [obj, user]);
 
